@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-neon">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zenkira | Elite Anime Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Bangers&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg-dark: #070707;
+        --bg-card: #0c0c0c;
+        --bg-glass: rgba(7, 7, 7, 0.85);
+        --text-white: #FFFFFF;
+        --text-muted: #888888;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --neon-primary: #FF2E88;
+        --neon-secondary: #00F5FF;
+        --neon-tertiary: #CCFF00;
+        --card-shadow: rgba(255, 46, 136, 0.3);
+        --haki-purple: #4B0082;
+        --chakra-blue: #00A3FF;
+      }
+
+      .theme-solar {
+        --neon-primary: #FF6600;
+        --neon-secondary: #FFD700;
+        --neon-tertiary: #FF0033;
+        --card-shadow: rgba(255, 102, 0, 0.3);
+      }
+
+      .theme-void {
+        --neon-primary: #B026FF;
+        --neon-secondary: #00F5FF;
+        --neon-tertiary: #FF2E88;
+        --card-shadow: rgba(176, 38, 255, 0.3);
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-dark);
+        color: var(--text-white);
+        overflow-x: hidden;
+        background-image: 
+          radial-gradient(circle at 2px 2px, rgba(255,255,255,0.02) 1px, transparent 0);
+        background-size: 24px 24px;
+      }
+
+      .font-header { font-family: 'Space Grotesk', sans-serif; }
+      .font-anime { font-family: 'Bangers', cursive; }
+
+      .manga-halftone {
+        background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
+        background-size: 4px 4px;
+      }
+
+      /* Hover Glow */
+      .glow-neon-primary-hover:hover {
+        box-shadow: 0 0 35px var(--card-shadow);
+        border-color: var(--neon-primary);
+      }
+
+      /* Animations */
+      @keyframes scanner-beam {
+        0% { top: -10%; }
+        100% { top: 110%; }
+      }
+      .animate-scanner-beam { animation: scanner-beam 2s linear infinite; }
+
+      @keyframes aura-shine {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+      }
+      .animate-aura-shine { animation: aura-shine 1.5s infinite; }
+
+      @keyframes jitter-high {
+        0%, 100% { transform: translate(0, 0); }
+        20% { transform: translate(-2px, 1px); }
+        40% { transform: translate(1px, -2px); }
+        60% { transform: translate(-1px, 2px); }
+        80% { transform: translate(2px, -1px); }
+      }
+      .animate-jitter-high { animation: jitter-high 0.1s infinite; }
+
+      @keyframes royal-pulse {
+        0%, 100% { box-shadow: inset 0 0 20px rgba(255, 215, 0, 0); }
+        50% { box-shadow: inset 0 0 60px rgba(255, 215, 0, 0.3); }
+      }
+      .animate-royal-pulse { animation: royal-pulse 1s infinite ease-in-out; }
+
+      @keyframes fade-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in { animation: fade-in 0.8s ease-out forwards; }
+
+      @keyframes slide-infinite {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      .animate-slide-infinite { animation: slide-infinite 40s linear infinite; }
+
+      @keyframes loading {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+
+      @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .animate-spin-slow { animation: spin-slow 8s linear infinite; }
+
+      /* Custom Elements */
+      .speech-bubble {
+        background: white;
+        color: black;
+        padding: 4px 12px;
+        font-family: 'Bangers', cursive;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        position: relative;
+        font-size: 14px;
+        border: 2px solid black;
+      }
+      .speech-bubble::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 12px;
+        border-left: 8px solid white;
+        border-bottom: 8px solid transparent;
+      }
+
+      .anime-border {
+        border: 4px solid black;
+        box-shadow: 4px 4px 0px white;
+      }
+
+      .skew-panel {
+        transform: skew(-2deg);
+        transition: transform 0.3s;
+      }
+      .skew-panel:hover {
+        transform: skew(0deg);
+      }
+      .skew-content { transform: skew(2deg); transition: transform 0.3s; }
+      .skew-panel:hover .skew-content { transform: skew(0deg); }
+
+      .speed-lines {
+        background-image: linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 40px 100%;
+      }
+
+      /* Special Effects Containers */
+      .slash-effect {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .slash-line {
+        width: 200%;
+        height: 100px;
+        background: white;
+        transform: rotate(-45deg);
+        box-shadow: 0 0 50px white;
+        animation: slash-anim 0.5s ease-out forwards;
+      }
+      @keyframes slash-anim {
+        0% { transform: rotate(-45deg) translateX(-100%); opacity: 1; }
+        100% { transform: rotate(-45deg) translateX(100%); opacity: 0; }
+      }
+
+      .pirate-emblem-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 998;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fade-in 0.5s ease-out;
+      }
+
+      .btn-primary-scale {
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .btn-primary-scale:hover { transform: scale(1.1); }
+      .btn-primary-scale:active { transform: scale(0.95); }
+
+      ::-webkit-scrollbar { width: 10px; }
+      ::-webkit-scrollbar-track { background: var(--bg-dark); }
+      ::-webkit-scrollbar-thumb { background: #fff; border: 3px solid var(--bg-dark); }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

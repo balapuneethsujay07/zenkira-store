@@ -1,0 +1,8 @@
+{
+  "name": "Copy of Zenkira",
+  "description": "A vibrant, AI-powered anime merchandise store featuring trending series, exclusive figures, and smart recommendations using Gemini.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
