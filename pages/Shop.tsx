@@ -1,20 +1,21 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SlidersHorizontal, ChevronDown, Search, LayoutGrid, X, Zap, Box, Shirt, Smartphone, Package, Filter, Target, Crosshair } from 'lucide-react';
 import ProductCard from '../components/ProductCard.tsx';
 import { Product, Category } from '../types.ts';
 
+// Added onPlaySound to ShopProps and updated onAddToCart signature
 interface ShopProps {
   products: Product[];
-  onAddToCart: (p: Product) => void;
+  onAddToCart: (p: Product, q: number) => void;
   onToggleWishlist: (id: string) => void;
   wishlist: string[];
   onOpenModal: (p: Product) => void;
   onFindEgg: (id: string, name: string) => void;
+  onPlaySound: (type: string) => void;
 }
 
-const Shop: React.FC<ShopProps> = ({ products, onAddToCart, onToggleWishlist, wishlist, onOpenModal, onFindEgg }) => {
+const Shop: React.FC<ShopProps> = ({ products, onAddToCart, onToggleWishlist, wishlist, onOpenModal, onFindEgg, onPlaySound }) => {
   const [activeCategory, setActiveCategory] = useState<Category>('All');
   const [activeSeries, setActiveSeries] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -80,7 +81,7 @@ const Shop: React.FC<ShopProps> = ({ products, onAddToCart, onToggleWishlist, wi
               {categories.map(cat => (
                 <button 
                   key={cat.id}
-                  onClick={() => setActiveCategory(cat.id as Category)}
+                  onClick={() => { setActiveCategory(cat.id as Category); onPlaySound('click'); }}
                   className={`group flex items-center gap-5 px-6 py-5 rounded-none font-anime text-2xl uppercase italic tracking-widest border-2 transition-all ${activeCategory === cat.id ? 'bg-white text-black border-black shadow-[6px_6px_0px_var(--neon-primary)]' : 'bg-transparent border-white/10 text-zinc-500 hover:border-white hover:text-white'}`}
                 >
                   <span className={activeCategory === cat.id ? 'text-black' : 'group-hover:text-[var(--neon-primary)] transition-colors'}>{cat.icon}</span>
@@ -99,7 +100,7 @@ const Shop: React.FC<ShopProps> = ({ products, onAddToCart, onToggleWishlist, wi
               {allSeries.map(ser => (
                 <button 
                   key={ser}
-                  onClick={() => setActiveSeries(ser)}
+                  onClick={() => { setActiveSeries(ser); onPlaySound('click'); }}
                   className={`px-4 py-2 text-xs font-header font-black uppercase italic tracking-widest border-2 transition-all ${activeSeries === ser ? 'bg-[var(--neon-secondary)] border-white text-black shadow-[4px_4px_0px_white]' : 'bg-black border-white/10 text-zinc-500 hover:text-white hover:border-white/30'}`}
                 >
                   {ser}
@@ -116,37 +117,37 @@ const Shop: React.FC<ShopProps> = ({ products, onAddToCart, onToggleWishlist, wi
         </div>
       </aside>
 
-      {/* MAIN CONTENT AREA - ADJUSTED FOR FIXED SIDEBAR */}
+      {/* MAIN CONTENT AREA */}
       <main className="lg:ml-80 transition-all duration-300">
-        <div className="container mx-auto px-6 py-20 md:px-12">
+        <div className="container mx-auto px-4 py-10 md:px-12 md:py-20">
           {/* Header Section */}
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-10 pb-16 border-b-4 border-white mb-20">
-            <div className="space-y-6">
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 md:gap-10 pb-10 md:pb-16 border-b-4 border-white mb-10 md:mb-20">
+            <div className="space-y-4 md:space-y-6 w-full max-w-full overflow-hidden">
               <div className="flex items-center gap-4">
-                 <div className="speech-bubble">MISSION: LOOT THE VAULT!</div>
+                 <div className="speech-bubble text-xs sm:text-sm">MISSION: LOOT THE VAULT!</div>
               </div>
-              <h1 className="text-7xl md:text-9xl font-anime text-white uppercase italic drop-shadow-[8px_8px_0px_var(--neon-primary)] tracking-tight">
+              <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-anime text-white uppercase italic drop-shadow-[4px_4px_0px_var(--neon-primary)] md:drop-shadow-[8px_8px_0px_var(--neon-primary)] tracking-tight break-words">
                 ACCESS_MARKET
               </h1>
               <div className="flex items-center gap-6">
-                <p className="text-zinc-500 font-header font-black uppercase text-sm tracking-[0.4em] italic flex items-center gap-3">
-                  <Search size={18} className="text-[var(--neon-secondary)]" /> ACQUISITION_TARGETS: {filteredProducts.length}
+                <p className="text-zinc-500 font-header font-black uppercase text-[10px] sm:text-sm tracking-[0.2em] md:tracking-[0.4em] italic flex items-center gap-3">
+                  <Search size={14} className="text-[var(--neon-secondary)]" /> ACQUISITION_TARGETS: {filteredProducts.length}
                 </p>
-                <div className="h-px flex-grow bg-white/10"></div>
+                <div className="h-px flex-grow bg-white/10 hidden sm:block"></div>
               </div>
             </div>
 
-            <div className="flex items-center gap-8 w-full md:w-auto">
+            <div className="flex items-center gap-4 w-full md:w-auto mt-4 md:mt-0">
               <div className="relative group w-full md:w-auto">
-                <button className="w-full md:w-auto flex items-center justify-center gap-4 bg-white text-black px-10 py-5 font-anime text-2xl uppercase italic tracking-widest shadow-[8px_8px_0px_var(--neon-secondary)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none">
-                  SORT: {sortBy} <ChevronDown size={24} />
+                <button className="w-full md:w-auto flex items-center justify-center gap-4 bg-white text-black px-6 md:px-10 py-4 md:py-5 font-anime text-lg md:text-2xl uppercase italic tracking-widest shadow-[4px_4px_0px_var(--neon-secondary)] md:shadow-[8px_8px_0px_var(--neon-secondary)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none">
+                  SORT: {sortBy} <ChevronDown size={20} />
                 </button>
-                <div className="absolute top-full right-0 mt-6 w-full md:w-72 glass border-4 border-white overflow-hidden hidden group-hover:block z-50 animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute top-full right-0 mt-2 md:mt-6 w-full md:w-72 glass border-4 border-white overflow-hidden hidden group-hover:block z-50 animate-in fade-in zoom-in-95 duration-200">
                   {['Featured', 'Price: Low to High', 'Price: High to Low'].map(opt => (
                     <button 
                       key={opt}
-                      onClick={() => setSortBy(opt)}
-                      className={`w-full text-left px-8 py-6 text-xl font-anime uppercase italic tracking-widest transition-colors hover:bg-white/10 ${sortBy === opt ? 'text-[var(--neon-primary)] bg-white/5' : 'text-zinc-400'}`}
+                      onClick={() => { setSortBy(opt); onPlaySound('click'); }}
+                      className={`w-full text-left px-8 py-4 md:py-6 text-lg md:text-xl font-anime uppercase italic tracking-widest transition-colors hover:bg-white/10 ${sortBy === opt ? 'text-[var(--neon-primary)] bg-white/5' : 'text-zinc-400'}`}
                     >
                       {opt}
                     </button>
@@ -158,7 +159,7 @@ const Shop: React.FC<ShopProps> = ({ products, onAddToCart, onToggleWishlist, wi
 
           {/* Product Grid */}
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-x-12 gap-y-24 animate-fade-in pb-40">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-x-6 md:gap-x-12 gap-y-16 md:gap-y-24 animate-fade-in pb-40">
               {filteredProducts.map((product) => (
                 <div key={product.id} className="skew-panel">
                   <div className="skew-content h-full">
@@ -175,20 +176,20 @@ const Shop: React.FC<ShopProps> = ({ products, onAddToCart, onToggleWishlist, wi
               ))}
             </div>
           ) : (
-            <div className="text-center py-60 anime-panel max-w-4xl mx-auto space-y-12">
+            <div className="text-center py-20 md:py-60 anime-panel max-w-4xl mx-auto space-y-8 md:space-y-12 px-4">
               <div className="relative inline-block">
-                <Search className="mx-auto text-zinc-900" size={160} />
-                <div className="absolute -top-10 -right-10 p-4 bg-[var(--neon-primary)] text-white font-anime text-5xl uppercase italic animate-bounce border-4 border-white shadow-[8px_8px_0px_black]">
+                <Search className="mx-auto text-zinc-900 w-24 h-24 md:w-40 md:h-40" />
+                <div className="absolute -top-6 md:-top-10 -right-6 md:-right-10 p-2 md:p-4 bg-[var(--neon-primary)] text-white font-anime text-2xl md:text-5xl uppercase italic animate-bounce border-2 md:border-4 border-white shadow-[4px_4px_0px_black]">
                   FAIL!
                 </div>
               </div>
-              <div className="space-y-6">
-                <h2 className="text-6xl font-anime text-white uppercase italic tracking-widest">SIGNAL_LOST</h2>
-                <p className="text-zinc-500 font-header font-black uppercase text-sm tracking-[0.3em] italic">No compatible artifacts detected in this grid sector.</p>
+              <div className="space-y-4 md:space-y-6">
+                <h2 className="text-4xl md:text-6xl font-anime text-white uppercase italic tracking-widest">SIGNAL_LOST</h2>
+                <p className="text-zinc-500 font-header font-black uppercase text-[10px] md:text-sm tracking-[0.2em] md:tracking-[0.3em] italic">No artifacts detected in this grid sector.</p>
               </div>
               <button 
-                onClick={clearFilters}
-                className="bg-white text-black px-16 py-6 font-anime text-3xl uppercase italic tracking-widest shadow-[12px_12px_0px_var(--neon-primary)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
+                onClick={() => { clearFilters(); onPlaySound('shutter'); }}
+                className="bg-white text-black px-8 md:px-16 py-4 md:py-6 font-anime text-xl md:text-3xl uppercase italic tracking-widest shadow-[8px_8px_0px_var(--neon-primary)] md:shadow-[12px_12px_0px_var(--neon-primary)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
               >
                 RE-INITIALIZE_SCAN
               </button>

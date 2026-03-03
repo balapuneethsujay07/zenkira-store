@@ -5,9 +5,11 @@ import { ArrowRight, CheckCircle, ShieldCheck } from 'lucide-react';
 
 interface RegisterProps {
   onRegisterSuccess: () => void;
+  /* Added onPlaySound to RegisterProps to match the props being passed in App.tsx */
+  onPlaySound: (type: string) => void;
 }
 
-const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
+const Register: React.FC<RegisterProps> = ({ onRegisterSuccess, onPlaySound }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [isInitializing, setIsInitializing] = useState(false);
@@ -16,6 +18,8 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsInitializing(true);
+    /* Play registration start sound effect */
+    onPlaySound('powerup');
     setTimeout(() => {
       setSuccess(true);
       onRegisterSuccess();
@@ -91,7 +95,7 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
           )}
 
           <div className="mt-8 text-center pt-6 border-t border-white/5">
-            <Link to="/login" className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest hover:text-white transition-colors group">
+            <Link to="/login" onClick={() => onPlaySound('click')} className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest hover:text-white transition-colors group">
               <span className="group-hover:text-[#FF2E88]">SYNC_EXISTING?</span> RETURN_TO_LOGIN
             </Link>
           </div>

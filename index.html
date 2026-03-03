@@ -2,7 +2,7 @@
 <html lang="en" class="theme-neon">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Zenkira | Elite Anime Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Bangers&display=swap" rel="stylesheet">
@@ -36,11 +36,23 @@
         --card-shadow: rgba(176, 38, 255, 0.3);
       }
 
+      * {
+        box-sizing: border-box;
+      }
+
+      html, body {
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+
       body {
         font-family: 'Inter', sans-serif;
         background-color: var(--bg-dark);
         color: var(--text-white);
-        overflow-x: hidden;
         background-image: 
           radial-gradient(circle at 2px 2px, rgba(255,255,255,0.02) 1px, transparent 0);
         background-size: 24px 24px;
@@ -52,6 +64,28 @@
       .manga-halftone {
         background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
         background-size: 4px 4px;
+      }
+
+      .speed-lines {
+        background-image: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255, 255, 255, 0.03) 40px, rgba(255, 255, 255, 0.03) 41px);
+      }
+
+      .skew-panel {
+        transform: skewY(-1deg);
+        transition: transform 0.3s ease;
+      }
+      .skew-panel:hover { transform: skewY(0deg); }
+      
+      .skew-content {
+        transform: skewY(1deg);
+        transition: transform 0.3s ease;
+      }
+      .skew-panel:hover .skew-content { transform: skewY(0deg); }
+
+      .anime-panel {
+        background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.8) 100%);
+        border: 2px solid white;
+        box-shadow: 10px 10px 0px var(--neon-primary);
       }
 
       /* Hover Glow */
@@ -82,24 +116,6 @@
       }
       .animate-jitter-high { animation: jitter-high 0.1s infinite; }
 
-      @keyframes royal-pulse {
-        0%, 100% { box-shadow: inset 0 0 20px rgba(255, 215, 0, 0); }
-        50% { box-shadow: inset 0 0 60px rgba(255, 215, 0, 0.3); }
-      }
-      .animate-royal-pulse { animation: royal-pulse 1s infinite ease-in-out; }
-
-      @keyframes fade-in {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fade-in { animation: fade-in 0.8s ease-out forwards; }
-
-      @keyframes slide-infinite {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-      .animate-slide-infinite { animation: slide-infinite 40s linear infinite; }
-
       @keyframes loading {
         0% { transform: translateX(-100%); }
         100% { transform: translateX(100%); }
@@ -111,7 +127,6 @@
       }
       .animate-spin-slow { animation: spin-slow 8s linear infinite; }
 
-      /* Custom Elements */
       .speech-bubble {
         background: white;
         color: black;
@@ -122,6 +137,7 @@
         position: relative;
         font-size: 14px;
         border: 2px solid black;
+        white-space: nowrap;
       }
       .speech-bubble::after {
         content: '';
@@ -132,69 +148,16 @@
         border-bottom: 8px solid transparent;
       }
 
-      .anime-border {
-        border: 4px solid black;
-        box-shadow: 4px 4px 0px white;
-      }
-
-      .skew-panel {
-        transform: skew(-2deg);
-        transition: transform 0.3s;
-      }
-      .skew-panel:hover {
-        transform: skew(0deg);
-      }
-      .skew-content { transform: skew(2deg); transition: transform 0.3s; }
-      .skew-panel:hover .skew-content { transform: skew(0deg); }
-
-      .speed-lines {
-        background-image: linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-        background-size: 40px 100%;
-      }
-
-      /* Special Effects Containers */
-      .slash-effect {
-        position: fixed;
-        inset: 0;
-        z-index: 999;
-        pointer-events: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .slash-line {
-        width: 200%;
-        height: 100px;
-        background: white;
-        transform: rotate(-45deg);
-        box-shadow: 0 0 50px white;
-        animation: slash-anim 0.5s ease-out forwards;
-      }
-      @keyframes slash-anim {
-        0% { transform: rotate(-45deg) translateX(-100%); opacity: 1; }
-        100% { transform: rotate(-45deg) translateX(100%); opacity: 0; }
-      }
-
-      .pirate-emblem-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 998;
-        background: rgba(0,0,0,0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        animation: fade-in 0.5s ease-out;
-      }
-
-      .btn-primary-scale {
-        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      }
-      .btn-primary-scale:hover { transform: scale(1.1); }
-      .btn-primary-scale:active { transform: scale(0.95); }
-
-      ::-webkit-scrollbar { width: 10px; }
+      ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: var(--bg-dark); }
-      ::-webkit-scrollbar-thumb { background: #fff; border: 3px solid var(--bg-dark); }
+      ::-webkit-scrollbar-thumb { background: #fff; border-radius: 3px; }
+
+      @media (max-width: 640px) {
+        .container {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+      }
     </style>
   <script type="importmap">
 {
@@ -208,8 +171,10 @@
   }
 }
 </script>
+<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>
-  </body>
+  <script type="module" src="/index.tsx"></script>
+</body>
 </html>

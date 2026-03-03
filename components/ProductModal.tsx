@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Heart, Star, ShoppingBag, CreditCard, Zap, Target, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, Play, Pause, Volume2, VolumeX, Sparkles, MessageSquare, Send, User } from 'lucide-react';
+import { X, Heart, Star, ShoppingBag, CreditCard, Zap, Target, ShieldCheck, AlertTriangle, CheckCircle2, XCircle, Play, Pause, Volume2, VolumeX, Sparkles, MessageSquare, Send, User, Tag } from 'lucide-react';
 import { Product, Review, UserProfile } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { EASTER_EGGS } from '../constants';
@@ -15,9 +15,10 @@ interface ProductModalProps {
   onFindEgg: (id: string, name: string) => void;
   onAddReview: (productId: string, review: Review) => void;
   currentUser: UserProfile | null;
+  isGlobalAudioOn: boolean;
 }
 
-const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCart, onBuyNow, onToggleWishlist, isWishlisted, onFindEgg, onAddReview, currentUser }) => {
+const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCart, onBuyNow, onToggleWishlist, isWishlisted, onFindEgg, onAddReview, currentUser, isGlobalAudioOn }) => {
   const [quantity, setQuantity] = useState(1);
   const [viewMode, setViewMode] = useState<'image' | 'video'>('image');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -127,6 +128,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCa
     ? product.reviews.reduce((acc, rev) => acc + rev.rating, 0) / product.reviews.length
     : 5;
 
+  const discountPercent = product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
+  const savingsAmount = product.originalPrice ? product.originalPrice - product.price : 0;
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-300">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
@@ -136,12 +140,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCa
           <X size={20} />
         </button>
 
-        {/* Left: Media Section */}
         <div className="md:w-3/5 relative bg-[#050505] flex flex-col h-[450px] md:h-auto overflow-hidden border-r border-white/5" onMouseMove={handleMouseMove}>
            <div className="flex-grow relative overflow-hidden group/media">
               {viewMode === 'video' && product.videoUrl ? (
                 <div className="w-full h-full relative">
-                  <video ref={videoRef} src={product.videoUrl} autoPlay loop muted={isMuted} playsInline className="w-full h-full object-cover animate-in fade-in duration-500" onClick={(e) => { e.stopPropagation(); togglePlay(); }} />
+                  <video ref={videoRef} src={product.videoUrl} autoPlay loop muted={!isGlobalAudioOn || isMuted} playsInline className="w-full h-full object-cover animate-in fade-in duration-500" onClick={(e) => { e.stopPropagation(); togglePlay(); }} />
                   <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end transition-opacity duration-500 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'}`}>
                       <div className="p-6 space-y-4">
                         <div className="relative h-1 bg-white/10 rounded-full cursor-pointer" onClick={(e) => {
@@ -158,7 +161,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCa
                               {isPlaying ? <Pause size={18} /> : <Play size={18} />}
                             </button>
                             <button onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }} className="text-white hover:text-[var(--neon-secondary)] transition-colors btn-primary-scale">
-                              {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+                              {(!isGlobalAudioOn || isMuted) ? <VolumeX size={16} /> : <Volume2 size={16} />}
                             </button>
                           </div>
                           <span className="text-[9px] font-mono text-white/50">{Math.floor(currentTime)}s / {Math.floor(duration)}s</span>
@@ -198,7 +201,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCa
            </div>
         </div>
 
-        {/* Right: Info Section */}
         <div className="md:w-2/5 p-6 md:p-10 overflow-y-auto custom-scrollbar bg-black/40 relative">
           <div className="space-y-12">
             <div className="space-y-4">
@@ -235,15 +237,25 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCa
             </div>
 
             <div className="space-y-2 pt-4">
-              <p className="text-[8px] font-header font-black text-[var(--text-muted)] uppercase italic opacity-60">Sample_Price_Protocol</p>
+              <p className="text-[8px] font-header font-black text-[var(--text-muted)] uppercase italic opacity-60">UNIT_VALUATION</p>
               <div className="flex items-baseline gap-4">
+                <span className="text-5xl font-header font-black text-[var(--neon-secondary)] italic drop-shadow-[0_0_10px_var(--neon-secondary)]">₹{product.price.toLocaleString('en-IN')}</span>
                 {product.originalPrice && (
-                  <span className="text-xl font-header font-black text-white/20 line-through italic decoration-[var(--neon-primary)]">
-                    ₹{product.originalPrice.toLocaleString()}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-xl font-header font-black text-white/20 line-through italic decoration-[var(--neon-primary)] decoration-2">
+                      ₹{product.originalPrice.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[9px] font-header font-black text-[var(--neon-primary)] uppercase tracking-widest">
+                      -{discountPercent}% OFF
+                    </span>
+                  </div>
                 )}
-                <span className="text-5xl font-header font-black text-[var(--neon-secondary)] italic drop-shadow-[0_0_10px_var(--neon-secondary)]">₹{product.price.toLocaleString()}</span>
               </div>
+              {savingsAmount > 0 && (
+                <div className="mt-2 px-3 py-1 bg-[var(--neon-primary)]/10 text-[var(--neon-primary)] text-[9px] font-mono uppercase tracking-[0.2em] italic border border-[var(--neon-primary)]/20 w-fit rounded-sm">
+                   SYSTEM_SAVINGS: ₹{savingsAmount.toLocaleString('en-IN')}
+                </div>
+              )}
             </div>
 
             <div className="space-y-6 pt-8 border-t border-white/5">

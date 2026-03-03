@@ -1,9 +1,12 @@
-
 import React from 'react';
 import { SAMPLE_VIDEOS, Logo } from '../constants';
 import { History, Target, Users, Globe, Zap, ShieldCheck } from 'lucide-react';
 
-const About: React.FC = () => {
+interface AboutProps {
+  isAudioOn: boolean;
+}
+
+const About: React.FC<AboutProps> = ({ isAudioOn }) => {
   return (
     <div className="pb-40 space-y-40">
       {/* Hero Header */}
@@ -25,7 +28,7 @@ const About: React.FC = () => {
       <section className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
            <div className="aspect-video relative rounded-sm overflow-hidden border-2 border-white/5 bg-black shadow-[0_0_50px_rgba(0,0,0,0.8)]">
-             <video autoPlay muted loop className="w-full h-full object-cover opacity-60">
+             <video autoPlay muted={!isAudioOn} loop className="w-full h-full object-cover opacity-60">
                 <source src={SAMPLE_VIDEOS[1]} type="video/mp4" />
              </video>
              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>

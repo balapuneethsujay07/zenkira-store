@@ -21,6 +21,7 @@ export interface Product {
   image2?: string;
   images?: string[];
   videoUrl?: string;
+  videoUrl2?: string; // Secondary video support
   videoMoments?: { label: string; time: number }[];
   isFeatured?: boolean;
   stock: number;

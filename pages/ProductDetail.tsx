@@ -38,9 +38,10 @@ interface ProductDetailProps {
   wishlist: string[];
   onAddReview: (productId: string, review: Review) => void;
   currentUser: UserProfile | null;
+  isGlobalAudioOn: boolean;
 }
 
-const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, onBuyNow, onToggleWishlist, wishlist, onAddReview, currentUser }) => {
+const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, onBuyNow, onToggleWishlist, wishlist, onAddReview, currentUser, isGlobalAudioOn }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
@@ -179,17 +180,15 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, on
                     src={product.videoUrl} 
                     autoPlay 
                     loop 
-                    muted={isMuted}
+                    muted={!isGlobalAudioOn || isMuted}
                     playsInline 
                     className="w-full h-full object-contain"
                     onClick={(e) => { e.stopPropagation(); togglePlay(); }}
                   />
                   
-                  {/* Custom Video Controls Overlay */}
                   <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end transition-opacity duration-500 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'}`}>
                     <div className="p-8 space-y-4">
                       
-                      {/* Key Moments */}
                       {product.videoMoments && (
                         <div className="flex gap-2 overflow-x-auto custom-scrollbar pb-2">
                           {product.videoMoments.map((moment, idx) => (
@@ -204,7 +203,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, on
                         </div>
                       )}
 
-                      {/* Progress Bar */}
                       <div className="relative h-1.5 bg-white/10 rounded-full cursor-pointer overflow-visible" onClick={(e) => {
                         e.stopPropagation();
                         const rect = e.currentTarget.getBoundingClientRect();
@@ -224,7 +222,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, on
                           </button>
                           <div className="flex items-center gap-2">
                             <button onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }} className="text-white hover:text-[var(--neon-secondary)] transition-colors">
-                              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                              {(!isGlobalAudioOn || isMuted) ? <VolumeX size={20} /> : <Volume2 size={20} />}
                             </button>
                             <span className="text-[10px] font-mono text-white/60">
                               {Math.floor(currentTime)}s / {Math.floor(duration)}s
@@ -245,7 +243,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, on
                 <div className="relative w-full h-full flex items-center justify-center">
                   <img src={images[activeImageIndex]} alt={product.name} className="w-full h-full object-contain transition-all duration-700 animate-in fade-in scale-100" />
                   
-                  {/* Image Navigation */}
                   {images.length > 1 && (
                     <>
                       <button 
@@ -280,7 +277,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, on
               <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-[var(--neon-secondary)] opacity-50"></div>
             </div>
 
-            {/* Thumbnail Strip */}
             <div className="flex gap-4 p-4 glass border border-white/5 rounded-sm bg-black/20 overflow-x-auto custom-scrollbar">
                {images.map((img, idx) => (
                  <button 
@@ -302,7 +298,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, on
             </div>
           </div>
 
-          {/* Feedback Area on Detail Page */}
           <div className="space-y-12 pt-12 border-t border-white/5">
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4 text-[var(--neon-tertiary)]">
@@ -324,7 +319,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, on
              </div>
 
              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                {/* Submit Feedback */}
                 <div className="space-y-6">
                    <div className="glass p-8 border border-white/10 rounded-sm space-y-6">
                       <h3 className="text-xs font-header font-black text-white uppercase tracking-widest italic">TRANSMIT_NEW_DATA</h3>
@@ -365,7 +359,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, on
                    </div>
                 </div>
 
-                {/* Feedback Stream */}
                 <div className="space-y-8 max-h-[500px] overflow-y-auto custom-scrollbar pr-4">
                    {product.reviews && product.reviews.length > 0 ? product.reviews.map((rev) => (
                      <div key={rev.id} className="glass p-6 border border-white/5 space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
@@ -429,17 +422,22 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, onAddToCart, on
             <div className="space-y-4">
               <div className="flex flex-col gap-2">
                  <div className="flex items-center gap-2 text-[var(--neon-tertiary)] font-header font-black text-[10px] uppercase italic tracking-[0.3em]">
-                    <Tag size={12} /> SAMPLE_PRICE_PROTOCOL
+                    <Tag size={12} /> UNIT_VALUATION
                  </div>
                  <div className="flex items-baseline gap-6">
-                    <span className="text-6xl font-header font-black text-[var(--neon-secondary)] italic tracking-tighter drop-shadow-[0_0_10px_var(--neon-secondary)]">₹{product.price.toLocaleString()}</span>
+                    <span className="text-6xl font-header font-black text-[var(--neon-secondary)] italic tracking-tighter drop-shadow-[0_0_10px_var(--neon-secondary)]">₹{product.price.toLocaleString('en-IN')}</span>
                     {product.originalPrice && (
                        <div className="flex flex-col">
-                          <span className="text-2xl font-header font-black text-white/20 line-through italic decoration-[var(--neon-primary)] decoration-4">₹{product.originalPrice.toLocaleString()}</span>
-                          <span className="text-[10px] font-header font-black text-[var(--neon-primary)] uppercase tracking-widest">-{discountPercent}% OFF</span>
+                          <span className="text-2xl font-header font-black text-white/20 line-through italic decoration-[var(--neon-primary)] decoration-4">₹{product.originalPrice.toLocaleString('en-IN')}</span>
+                          <span className="text-[10px] font-header font-black text-[var(--neon-primary)] uppercase tracking-widest">-{discountPercent}% PRICE DROP</span>
                        </div>
                     )}
                  </div>
+                 {discountAmount > 0 && (
+                   <div className="px-4 py-2 bg-[var(--neon-primary)]/10 border border-[var(--neon-primary)]/20 text-[var(--neon-primary)] text-[10px] font-header font-black uppercase italic tracking-widest rounded-sm mt-2">
+                      SYSTEM_SAVINGS: ₹{discountAmount.toLocaleString('en-IN')}
+                   </div>
+                 )}
               </div>
               
               <div className={`flex flex-col gap-2 p-3 ${stockStatus.bar} border border-white/5 rounded-sm`}>

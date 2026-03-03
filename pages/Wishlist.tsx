@@ -1,10 +1,10 @@
-
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, ArrowRight, Sparkles, Zap, Trash2, Search } from 'lucide-react';
 import { Product } from '../types';
 import ProductCard from '../components/ProductCard';
 
+// Added onPlaySound to WishlistProps
 interface WishlistProps {
   products: Product[];
   onAddToCart: (p: Product, q: number) => void;
@@ -12,6 +12,7 @@ interface WishlistProps {
   wishlist: string[];
   onOpenModal: (p: Product) => void;
   onFindEgg: (id: string, name: string) => void;
+  onPlaySound: (type: string) => void;
 }
 
 const Wishlist: React.FC<WishlistProps> = ({ 
@@ -20,7 +21,8 @@ const Wishlist: React.FC<WishlistProps> = ({
   onToggleWishlist, 
   wishlist, 
   onOpenModal, 
-  onFindEgg 
+  onFindEgg,
+  onPlaySound
 }) => {
   const wishlistedItems = useMemo(() => {
     return products.filter(p => wishlist.includes(p.id));
@@ -78,6 +80,7 @@ const Wishlist: React.FC<WishlistProps> = ({
             </div>
             <Link 
               to="/shop"
+              onClick={() => onPlaySound('teleport')}
               className="inline-block bg-white text-black px-16 py-6 font-anime text-3xl uppercase italic tracking-widest shadow-[12px_12px_0px_var(--neon-primary)] transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
             >
               LOOT_SOME_GEAR!
